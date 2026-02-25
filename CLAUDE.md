@@ -179,6 +179,20 @@ docker volume inspect open-webui-data  # 查看卷详情
 - **端口映射**: 宿主机 `8081` → 容器内 `8080`
 - **访问地址**: http://localhost:8081
 
+**重启服务规则**：
+```bash
+# 重启服务默认使用最新镜像（当前目录下的 open-webui.tar）
+docker load -i open-webui.tar && \
+docker stop open-webui && docker rm open-webui && \
+docker run -d \
+  --name open-webui \
+  -p 8081:8080 \
+  -v open-webui-data:/app/backend/data \
+  --add-host=host.docker.internal:host-gateway \
+  --restart always \
+  open-webui:latest
+```
+
 ## Important Patterns
 
 - **Streaming Responses**: Chat uses SSE/EventSource for streaming LLM responses
