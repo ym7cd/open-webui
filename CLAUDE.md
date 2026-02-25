@@ -155,6 +155,18 @@ docker volume inspect open-webui-data  # 查看卷详情
    - Stage 2: Python backend with embedded frontend
 3. Backend serves both API (`/api/*`) and frontend (`/*`)
 
+### Build Configuration Notice
+
+**IMPORTANT: 构建镜像前必须确认模型配置**
+
+- **模型使用方式**: 本项目仅使用第三方模型 API（如 OpenAI、Anthropic、通义千问等），无本地部署模型需求
+- **构建选项**: 不启用 CUDA、不内置 Ollama
+- **预下载模型**: 默认不预下载任何模型到镜像中
+- **构建前确认**: 在执行 `docker build` 或类似构建命令前，必须按以下流程向用户询问：
+  1. 首先询问是否需要预下载模型（精简版不预下载）
+  2. 如果用户确认需要预下载 → 询问具体需要哪些模型
+  3. 如果用户不需要 → 按默认配置构建（不包含模型文件）
+
 ## Configuration
 
 - Environment variables: `.env` (see `.env.example`)
