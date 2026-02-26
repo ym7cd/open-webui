@@ -214,3 +214,29 @@ docker run -d \
 - i18n locales: `src/lib/i18n/locales/{lang}/translation.json`
 - Python dependencies: `pyproject.toml` (managed with uv)
 - Node dependencies: `package.json`
+
+## Troubleshooting
+
+### Web Search - ddgs 首次使用卡死
+
+**症状**: 启用 DuckDuckGo (ddgs) 搜索后，页面卡死无响应
+
+**原因**: `ddgs` 库首次使用时会初始化浏览器指纹（impersonate）数据，这个过程可能需要较长时间或超时
+
+**解决方案**: 在容器中预先初始化 ddgs 库
+```bash
+docker exec open-webui python3 -c "
+from ddgs import DDGS
+with DDGS() as ddgs:
+    list(ddgs.text('test', max_results=1))
+print('ddgs 预热完成')
+"
+```
+
+**预期输出**:
+```
+Impersonate 'firefox_xxx' does not exist, using 'random'
+ddgs 预热完成
+```
+
+**注意**: 容器重启后可能需要重新执行预热命令
